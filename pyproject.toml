@@ -58,6 +58,7 @@ typing-extensions = "4.14.0"
 urllib3 = "2.5.0"
 virtualenv = "20.31.2"
 zstandard = "0.23.0"
+black = "^25.1.0"
 
 
 [build-system]

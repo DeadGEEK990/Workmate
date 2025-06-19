@@ -5,10 +5,7 @@ from src.operations import WhereOperation, AggregateOperation
 from src.model import from_csv_to_product
 
 
-OPERATIONS = {
-    'filter': WhereOperation,
-    'aggregate': AggregateOperation
-}
+OPERATIONS = {"filter": WhereOperation, "aggregate": AggregateOperation}
 
 
 def main():
@@ -44,5 +41,5 @@ def main():
         print(f"Ошибка: {str(e)}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

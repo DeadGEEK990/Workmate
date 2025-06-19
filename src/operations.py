@@ -12,7 +12,7 @@ class Operation(ABC):
 
 class WhereOperation(Operation):
     def execute(self, data: List[Product], arg: str) -> List[Product]:
-        ops = ['<', '>', '=']
+        ops = ["<", ">", "="]
         op = None
 
         # Ищем оператор в строке условия
@@ -28,31 +28,31 @@ class WhereOperation(Operation):
 
         # Проверяем существование поля
         check = check_field(field_name=key, dataclass_type=Product)
-        if not check.get('exists'):
+        if not check.get("exists"):
             raise ValueError(f"Поле {key} не существует")
 
-        field_type = check.get('type')
+        field_type = check.get("type")
         is_numeric = field_type in (int, float)
 
-        if not is_numeric and op != '=':
+        if not is_numeric and op != "=":
             raise ValueError(f"Оператор {op} применим только к числовым полям")
 
         try:
             if is_numeric:
-                value = float(value) if '.' in value else int(value)
+                value = float(value) if "." in value else int(value)
             elif field_type is bool:
-                value = value.lower() in ('true', '1', 'yes')
+                value = value.lower() in ("true", "1", "yes")
             else:
                 value = str(value)
         except ValueError:
             raise ValueError(f"Невозможно преобразовать '{value}' в {field_type}")
 
         match op:
-            case '<' if is_numeric:
+            case "<" if is_numeric:
                 op_func = lambda p: getattr(p, key) < value
-            case '>' if is_numeric:
+            case ">" if is_numeric:
                 op_func = lambda p: getattr(p, key) > value
-            case '=':
+            case "=":
                 op_func = lambda p: str(getattr(p, key)) == str(value)
             case _:
                 raise ValueError(f"Недопустимый оператор {op} для типа {field_type}")
@@ -62,22 +62,22 @@ class WhereOperation(Operation):
 
 class AggregateOperation(Operation):
     def execute(self, data: List[Product], arg: str) -> List[Product]:
-        key, func_name = arg.split('=', maxsplit=1)
+        key, func_name = arg.split("=", maxsplit=1)
 
         # Проверяем поле
         check = check_field(field_name=key, dataclass_type=Product)
-        if not (check.get('exists') and check.get('type') in (int, float)):
+        if not (check.get("exists") and check.get("type") in (int, float)):
             raise ValueError(f"Поле {key} не существует или имеет нечисловой тип")
 
         match func_name:
-            case 'min':
+            case "min":
                 return [min(data, key=lambda p: getattr(p, key))]
-            case 'max':
+            case "max":
                 return [max(data, key=lambda p: getattr(p, key))]
-            case 'avg':
+            case "avg":
                 # Выводит среднее значение и продукт, который ближе всего к среднему значению.
                 avg_value = sum(getattr(p, key) for p in data) / len(data)
-                print(tabulate([{'avg': avg_value}], headers="keys", tablefmt="grid"))
+                print(tabulate([{"avg": avg_value}], headers="keys", tablefmt="grid"))
                 closest = min(data, key=lambda p: abs(getattr(p, key) - avg_value))
                 return [closest]
             case _:
