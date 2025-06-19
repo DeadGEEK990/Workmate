@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from model import Product, check_field
+from src.model import Product, check_field
 from tabulate import tabulate
 
 

@@ -1,8 +1,8 @@
 import argparse
 from tabulate import tabulate
 from dataclasses import asdict
-from operations import WhereOperation, AggregateOperation
-from model import from_csv_to_product
+from src.operations import WhereOperation, AggregateOperation
+from src.model import from_csv_to_product
 
 
 OPERATIONS = {
